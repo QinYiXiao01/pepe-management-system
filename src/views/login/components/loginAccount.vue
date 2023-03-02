@@ -21,9 +21,11 @@ import { ElForm } from 'element-plus'
 import { defineComponent, reactive, ref } from 'vue'
 import LocalCache from '@/utils/cache'
 import { rules } from '../config/account-config'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
+    const store = useStore()
     const account = reactive({
       name: LocalCache.getCache('name') ?? '',
       password: LocalCache.getCache('password') ?? ''
@@ -34,7 +36,7 @@ export default defineComponent({
     const loginAction = (isKeepPassword: boolean) => {
       formRef.value?.validate((valid: boolean) => {
         if (valid) {
-          console.log('执行真正的登录逻辑')
+          // console.log('执行真正的登录逻辑')
           if (isKeepPassword) {
             // 1.判断是否记住密码
             LocalCache.setCache('name', account.name)
@@ -44,6 +46,8 @@ export default defineComponent({
           LocalCache.deleteCache('name')
           LocalCache.deleteCache('password')
         }
+        // 2.进行登录验证
+        store.dispatch('login/accountLoginAction', { ...account }) //传进账号和密码as payload，用展开运算符拿到属性
       }) // 验证是否合法，并对返回的valid进行回调
     }
 

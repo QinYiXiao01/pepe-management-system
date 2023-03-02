@@ -28,6 +28,7 @@ class PepeRequest {
       },
       (err) => {
         console.log('全局响应失败的拦截')
+        return err
       }
     )
 
@@ -51,18 +52,45 @@ class PepeRequest {
   }
 
   // 最内层：为request等方法添加拦截器
-  request(config: PepeRequestConfig): Promise<AxiosResponse<any>> {
-    // 我写的
-    if (config?.interceptors && config.interceptors?.requestInterceptor) {
-      config = config.interceptors.requestInterceptor(config)
-    }
-    // this.instance.request(config).then((res) => {
-    //   if (config?.interceptors && config?.interceptors.responseInterceptor) {
-    //     res = config?.interceptors.responseInterceptor(res)
-    //   }
-    //   console.log(res)
-    // })
-    return this.instance.request(config)
+  request<T>(config: PepeRequestConfig): Promise<T> {
+    return new Promise((resolve, reject) => {
+      // 我写的
+      if (config?.interceptors && config.interceptors?.requestInterceptor) {
+        config = config.interceptors.requestInterceptor(config)
+      }
+      this.instance
+        .request<any, T>(config)
+        .then((res) => {
+          if (
+            config?.interceptors &&
+            config?.interceptors.responseInterceptor
+          ) {
+            res = config?.interceptors.responseInterceptor(res)
+          }
+          // console.log(res)
+          resolve(res)
+        })
+        .catch((err) => {
+          reject(err)
+          return err
+        })
+    })
+  }
+
+  get<T>(config: PepeRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'GET' })
+  }
+
+  post<T>(config: PepeRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'POST' })
+  }
+
+  delete<T>(config: PepeRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'DELETE' })
+  }
+
+  patch<T>(config: PepeRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
 

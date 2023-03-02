@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue' // 用于更好地支持ts
-import LoginPanel from './components/loginPanel.vue'
+import LoginPanel from './components/LoginPanel.vue'
 
 export default defineComponent({
   components: {

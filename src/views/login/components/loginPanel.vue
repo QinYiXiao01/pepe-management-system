@@ -28,21 +28,21 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import loginAccount from './loginAccount.vue'
-import loginPhone from './loginPhone.vue'
+import LoginAccount from './LoginAccount.vue'
+import LoginPhone from './LoginPhone.vue'
 
 export default defineComponent({
   components: {
-    loginAccount,
-    loginPhone
+    LoginAccount,
+    LoginPhone
   },
   setup() {
     const activeName = ref('first')
     const isKeepPassword = ref(false)
-    const accountRef = ref<InstanceType<typeof loginAccount>>() // 登陆行为,注意写法
+    const accountRef = ref<InstanceType<typeof LoginAccount>>() // 登陆行为,注意写法
 
     const handleLoginClick = () => {
-      console.log('登录请求发送')
+      // console.log('登录请求发送')
       // 取得accountRef对象，然后调取子组件的action方法触发登录事件
       accountRef.value?.loginAction(isKeepPassword.value)
     }
