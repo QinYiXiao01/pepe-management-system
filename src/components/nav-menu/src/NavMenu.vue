@@ -34,30 +34,27 @@
             </template>
             <!-- 遍历item -->
             <template v-for="subitem in item.children" :key="subitem.id">
-              <el-menu-item :index="subitem.id">
+              <el-menu-item
+                :index="subitem.id"
+                @click="handleMenuItemClick(subitem)"
+              >
                 <i class="el-icon {{ subitem.icon }}"></i>
                 <span>{{ subitem.name }}</span>
               </el-menu-item>
             </template>
           </el-sub-menu>
         </template>
-        <!-- 一级菜单 -->
-        <!-- <template v-else-if="item.type === 2">
-          <el-menu-item>
-            <i v-if="item.icon" :class="item.icon"></i>
-            <span>{{ item.name }}</span>
-          </el-menu-item>
-        </template> -->
       </template>
     </el-menu>
     <template v-if="!collapse">
-      <div class="copy-right">Develped by Pepe_de_Laogong</div>
+      <div class="copy-right">Developed by Pepe_de_Laogong</div>
     </template>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -72,18 +69,15 @@ export default defineComponent({
     const store = useStore()
     const userMenus = computed(() => store.state.login.userMenus)
 
-    const iconName = store.state.login.userMenus.icon
-    const iconNameModi = computed(() => {
-      if (iconName) {
-        const name = iconName.replace('el-icon-', '')
-        console.log(name)
-        return `<${name} />`
-      } else {
-        return ''
-      }
-    })
+    const router = useRouter()
 
-    return { userMenus, iconNameModi }
+    const handleMenuItemClick = (item: any) => {
+      router.push({
+        path: item.url ? item.url : '/not-found'
+      })
+    }
+
+    return { userMenus, handleMenuItemClick }
   }
 })
 </script>
